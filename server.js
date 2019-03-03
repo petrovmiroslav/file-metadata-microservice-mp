@@ -1,13 +1,19 @@
 'use strict';
 
-var express = require('express');
-var cors = require('cors');
+const express = require('express');
 
 // require and use "multer"...
 
-var app = express();
+const app = express();
+const multer = require('multer');
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+function handlerPOST(req, res) {
+  res.json({'name' : req.file.originalname, 'type' : req.file.mimetype, 'size' : req.file.size});
+};
+app.route("/api/fileanalyse").post(upload.single('upfile'), handlerPOST);
 
-app.use(cors());
+
 app.use('/public', express.static(process.cwd() + '/public'));
 
 app.get('/', function (req, res) {
